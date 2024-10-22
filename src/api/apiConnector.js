@@ -1,0 +1,38 @@
+const apiBaseURL = 'https://easy-temp-backend.vercel.app/';
+
+class ApiConnector {
+  async getTemperature() {
+    try {
+      const response = await fetch(`${apiBaseURL}data/temperature`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch temperature data:', error);
+      return null; // You can return a fallback value or handle it as needed
+    }
+  }
+
+  async getSensors() {
+    try {
+      const response = await fetch(`${apiBaseURL}data/sensor`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch temperature data:', error);
+      return null; // You can return a fallback value or handle it as needed
+    }
+  }
+
+}
+
+export { ApiConnector };

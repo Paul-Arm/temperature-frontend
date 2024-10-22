@@ -1,4 +1,7 @@
 import './assets/main.css'
+import 'ag-grid-community/styles/ag-grid.css'; // Core grid CSS
+import 'ag-grid-community/styles/ag-theme-alpine.css'; // Alpine theme CSS
+
 
 import { createApp } from 'vue'
 import App from './App.vue'
