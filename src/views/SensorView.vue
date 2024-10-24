@@ -36,12 +36,12 @@ const herstellerMap = ref({}); // Maps herstellerID to hersteller name
 
 // Column definitions including the new "Hersteller Name" column
 const columnDefs = ref([
-  { headerName: 'Sensor Number', field: 'sensorNr', sortable: true, filter: true },
+  { headerName: 'Sensor Nummer', field: 'sensorNr', sortable: true, filter: true },
   { headerName: 'Address', field: 'adresse', sortable: true, filter: true },
   { headerName: 'Max Temp (°C)', field: 'maxTemperature', editable: true },
   { headerName: 'Hersteller ID', field: 'herstellerID', sortable: true, filter: true },
   { headerName: 'Hersteller Name', field: 'herstellerName', sortable: true, filter: true },
-  { headerName: 'Server Cabinet ID', field: 'serverschrankID', sortable: true, filter: true },
+  { headerName: 'Serverschrank ID', field: 'serverschrankID', sortable: true, filter: true },
 ]);
 
 const defaultColDef = ref({

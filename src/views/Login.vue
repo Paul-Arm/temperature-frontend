@@ -14,6 +14,7 @@
         <button type="submit" class="btn btn-custom">Login</button>
         <div v-if="error" class="alert alert-danger" style="margin-top: 1rem;" role="alert">{{ error }}</div>
     </form>
+    <button class="btn btn-link" @click="guestLogin()" style="color: blue; text-decoration: none;">als gast anmelden</button>
 </div>
 </div>
 </template>
@@ -54,6 +55,10 @@ export default {
             } catch (error) {
                 this.error = 'Fehler! (' + error + ')';
             }
+        },
+        async guestLogin() {
+            localStorage.setItem('token', 'GAST');
+            this.$router.push('/dashboard');
         }
     }
 };
