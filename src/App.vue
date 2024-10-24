@@ -22,13 +22,12 @@
                     </li>
                 </ul>
                 <form class="d-flex" role="search">
-                    <button class="btn btn-outline-danger" type="submit" @click="logout">Logout</button>
+                    <button class="btn btn-outline-danger" type="submit" @click="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> - Logout</button>
                 </form>
             </div>
         </div>
     </nav>
 </header>
-
 <RouterView />
 </template>
 
