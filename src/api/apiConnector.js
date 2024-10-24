@@ -33,6 +33,32 @@ class ApiConnector {
     }
   }
 
+  async updateSensor(sensorId, updateData) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('No token found');
+      return null;
+    }
+    try {
+      const response = await fetch(`${apiBaseURL}data/sensor`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({...updateData, sensorNR: sensorId}),
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to update sensor data:', error);
+      return null;
+    }
+  }
+
 }
 
 export { ApiConnector };
