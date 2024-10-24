@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>This is a Sensor page</h1>
+    <h1>Sensordaten</h1>
     <p v-if="!sensor.length">No data available</p>
     
     <ag-grid-vue
@@ -32,12 +32,15 @@ import { AgGridVue } from 'ag-grid-vue3'; // Import ag-Grid component
 
 const apiConnector = new ApiConnector();
 const sensor = ref([]); // Holds sensor data
+const herstellerMap = ref({}); // Maps herstellerID to hersteller name
 
+// Column definitions including the new "Hersteller Name" column
 const columnDefs = ref([
   { headerName: 'Sensor Number', field: 'sensorNr', sortable: true, filter: true },
   { headerName: 'Address', field: 'adresse', sortable: true, filter: true },
-  { headerName: 'Max Temp', field: 'maxTemperature', editable: true },
+  { headerName: 'Max Temp (°C)', field: 'maxTemperature', editable: true },
   { headerName: 'Hersteller ID', field: 'herstellerID', sortable: true, filter: true },
+  { headerName: 'Hersteller Name', field: 'herstellerName', sortable: true, filter: true },
   { headerName: 'Server Cabinet ID', field: 'serverschrankID', sortable: true, filter: true },
 ]);
 
@@ -49,9 +52,24 @@ const defaultColDef = ref({
 });
 
 onMounted(async () => {
-  const data = await apiConnector.getSensors();
-  if (data) {
-    sensor.value = data;
+  const [sensorData, herstellerData] = await Promise.all([
+    apiConnector.getSensors(),
+    apiConnector.getHersteller()
+  ]);
+
+  // Create a map for herstellerID -> hersteller name
+  if (herstellerData) {
+    herstellerData.forEach(hersteller => {
+      herstellerMap.value[hersteller.herstellerID] = hersteller.name;
+    });
+  }
+
+  // Add the "herstellerName" field to each sensor based on its herstellerID
+  if (sensorData) {
+    sensor.value = sensorData.map(sensor => ({
+      ...sensor,
+      herstellerName: herstellerMap.value[sensor.herstellerID] || 'Unknown'
+    }));
   }
 
   const token = localStorage.getItem('token');
@@ -65,10 +83,8 @@ const onCellValueChanged = async (event) => {
   console.log('Updated sensor:', updatedSensor);
   const sensorId = updatedSensor.sensorNr;
   
-  const updateData = {
-    maxTemperature: updatedSensor.maxTemperature,
-    // If there are other fields that need to be updated, add them here
-  };
+  // remove herstellerName
+  delete updatedSensor.herstellerName;
   
   await apiConnector.updateSensor(sensorId, updatedSensor);
 };

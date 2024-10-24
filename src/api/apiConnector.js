@@ -59,6 +59,23 @@ class ApiConnector {
     }
   }
 
+  async getHersteller()  {
+    try {
+      const response = await fetch(`${apiBaseURL}data/hersteller`, {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Failed to fetch hersteller data:', error);
+      return null; // You can return a fallback value or handle it as needed
+    }
+  }
+
 }
+
 
 export { ApiConnector };
