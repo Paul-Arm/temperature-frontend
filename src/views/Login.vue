@@ -32,12 +32,9 @@ export default {
     methods: {
         async login() {
             try {
-                ;
                 const url = 'https://easy-temp-backend.vercel.app/token';
 
-                const {
-                    data
-                } = await axios.post(url, {
+                const {data} = await axios.post(url, {
                     username: this.username,
                     password: this.password
                 }, {
@@ -65,7 +62,6 @@ export default {
 }
 
 .container {
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
