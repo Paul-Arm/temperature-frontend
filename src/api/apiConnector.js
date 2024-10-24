@@ -39,6 +39,10 @@ class ApiConnector {
       console.error('No token found');
       return null;
     }
+    if (token === 'GAST'){
+      console.error('No permission');
+      return null;
+    }
     try {
       const response = await fetch(`${apiBaseURL}data/sensor`, {
         method: 'PATCH',

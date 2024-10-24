@@ -50,7 +50,8 @@ export default {
                 // Redirect to protected route
                 this.$router.push('/dashboard');
             } catch (error) {
-                this.error = 'Fehler! (' + error + ')';
+                console.error(error);
+                this.error = 'Fehler! (' + error.response.data.detail + ')';
             }
         },
         async guestLogin() {
