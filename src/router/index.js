@@ -4,6 +4,7 @@ import Login from '../views/Login.vue';
 import Dashboard from '../views/Dashboard.vue';
 import SensordatenView from '../views/SensordatenView.vue'
 import SensorView from '../views/SensorView.vue'
+import LogView from '@/views/LogView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,12 @@ const router = createRouter({
       path: '/sensor',
       name: 'sensor',
       component: SensorView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/logs',
+      name: 'logs',
+      component: LogView,
       meta: { requiresAuth: true }
     }
   ]

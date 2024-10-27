@@ -20,6 +20,9 @@
                             <li><RouterLink  class="dropdown-item" to="/sensordaten">Sensordaten</RouterLink></li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+                        <RouterLink class="nav-link" to="/logs">Logs</RouterLink>
+                    </li>
                 </ul>
                 <form class="d-flex" role="search">
                     <button class="btn btn-outline-danger" type="submit" @click="logout"><i class="fa fa-sign-out" aria-hidden="true"></i> - Logout</button>

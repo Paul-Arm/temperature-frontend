@@ -4,7 +4,7 @@
     <!-- Ag-Grid table -->
     <ag-grid-vue
       class="ag-theme-alpine"
-      style="width: 100%; height: 500px;"
+      style="width: 100%; height: 900px;"
       :rowData="rowData"
       :columnDefs="columnDefs"
       :defaultColDef="defaultColDef"
@@ -43,7 +43,7 @@ const rowData = ref([]); // Holds the sensor data for the table
 
 // Define the column structure for ag-Grid
 const columnDefs = ref([
-  { headerName: 'ID', field: 'temperaturmessungsID', sortable: true, filter: true },
+  { headerName: 'ID', field: 'temperaturmessungsID', hide: true },
   { headerName: 'Timestamp', field: 'messzeitpunkt', sortable: true, filter: true },
   { headerName: 'Temperature', field: 'temperatur', sortable: true, filter: true },
   { headerName: 'Sensor ID', field: 'sensorNr', sortable: true, filter: true }
