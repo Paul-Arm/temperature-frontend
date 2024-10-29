@@ -16,11 +16,11 @@
                             Sensor
                         </a>
                         <ul class="dropdown-menu">
-                            <li><RouterLink  class="dropdown-item" to="/sensor">Sensoren</RouterLink></li>
-                            <li><RouterLink  class="dropdown-item" to="/sensordaten">Sensordaten</RouterLink></li>
+                            <li><RouterLink  class="dropdown-item" to="/sensor">Sensordaten</RouterLink></li>
+                            <li><RouterLink  class="dropdown-item" to="/sensordaten">Übersicht Temperaturen</RouterLink></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" v-if="getToken !== 'GAST'">
                         <RouterLink class="nav-link" to="/logs">Logs</RouterLink>
                     </li>
                 </ul>
@@ -44,6 +44,10 @@ export default {
   computed: {
     currentRouteName() {
         return this.$route.name;
+    },
+
+    getToken() {
+        return localStorage.getItem('token')
     }
   },
 

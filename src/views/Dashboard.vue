@@ -1,6 +1,5 @@
 <template>
 <div class="container">
-    {{ console.log(getStatisticChart) }}
     <div v-if="loading" class="loading-screen">
         <div class="spinner-border text-primary" role="status"></div>
     </div>
@@ -19,7 +18,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title" style="margin-bottom: 2rem;"><i class="fa fa-database" aria-hidden="true"></i> - Aktuelle Statistik von allen Sensoren</h5>
-                    <StatisticChart :chartData="statisticChartData" :chartOptions="statisticChartOptions" />
+                    <StatisticChart :chartData="getStatisticChart" />
                 </div>
             </div>
         </div>
@@ -27,24 +26,20 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-8">
+                        <div class="col-10">
                             <h5 class="card-title" style="margin-bottom: 2rem;"><i class="fa fa-area-chart" aria-hidden="true"></i> - Aktuelle Diagramme jeweiliger Sensoren</h5>
                         </div>
-                        <div class="col-4" style="text-align: end;">
-                            <div class="dropdown">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Sensoren
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="#">Sensor 1</a></li>
-                                    <li><a class="dropdown-item" href="#">Sensor 2</a></li>
-                                    <li><a class="dropdown-item" href="#">Sensor 3</a></li>
-                                </ul>
-                            </div>
+                        <div class="col-2" style="text-align: end;">
+                            <select class="form-select" v-model="selectedSensor" @change="getSelectedTemperature()">
+                                <option selected disabled style="text-align: center;">Bitte Sensor auswählen</option>
+                                <option v-for="(sensor, index) in sensors" :key="sensor.sensorNr">
+                                    {{ sensor.sensorNr }}
+                                </option>
+                            </select>
                         </div>
                     </div>
-                    <TempChart :chartData="tempChartData" :chartOptions="tempChartOptions" />
                 </div>
+                <TempChart :chartData="tempChartData" />
             </div>
         </div>
     </div>
@@ -68,134 +63,87 @@ export default {
 
             sensors: [],
 
-            statisticChartData: {
-                labels: ['Sensor 1', 'Sensor 2', 'Sensor 3', 'Sensor 4', 'Sensor 5'],
+            temperatures: [],
+
+            selectedSensor: null,
+
+            selectedTemperature: null,
+
+            tempChartData: {},
+        };
+    },
+
+    computed: {
+        getStatisticChart() {
+            let data = {};
+            let sensors = JSON.parse(JSON.stringify(this.sensors));
+            let temperatures = JSON.parse(JSON.stringify(this.temperatures));
+
+            data['statistic'] = {}
+
+            data['statistic']['data'] = {
+                labels: (function () {
+                    if (sensors) {
+                        let labelSensors = [];
+                        sensors.forEach(sensor => {
+                            labelSensors.push('Sensor ' + sensor.sensorNr);
+                        });
+                        return labelSensors;
+                    }
+                    return null;
+                }).call(data['statistic'], data['statistic']),
                 datasets: [{
                         label: 'Maximal Temperatur',
-                        data: [10, 53, 10, 83, 59],
+                        data: (function () {
+                            if (sensors) {
+                                let maxTemperature = [];
+                                sensors.forEach(sensor => {
+                                    maxTemperature.push(sensor.maxTemperature);
+                                });
+                                return maxTemperature;
+                            }
+                            return null;
+                        }).call(data['statistic'], data['statistic']),
                         fill: false,
                         backgroundColor: ['rgba(230, 0, 5, 0.75)'],
                         tension: 0.1,
                     },
                     {
                         label: 'Durchschnitt Temperatur',
-                        data: [65, 59, 80, 81, 56],
+                        data: (function () {
+                            if (sensors) {
+                                const sensorGroups = {};
+
+                                temperatures.forEach(entry => {
+                                    const sensorId = entry.sensorNr;
+                                    const temperature = entry.temperatur;
+
+                                    if (!sensorGroups[sensorId]) {
+                                        sensorGroups[sensorId] = [];
+                                    }
+                                    sensorGroups[sensorId].push(temperature);
+                                });
+
+                                const averageTemperatures = [];
+                                for (const sensorId in sensorGroups) {
+                                    const temperatures = sensorGroups[sensorId];
+                                    const sum = temperatures.reduce((acc, temp) => acc + temp, 0);
+                                    const average = sum / temperatures.length;
+
+                                    averageTemperatures.push(Number(average.toFixed(2)));
+                                }
+
+                                return averageTemperatures;
+                            }
+                        }).call(data['statistic'], data['statistic']),
                         fill: false,
                         backgroundColor: ['rgba(143, 143, 143, 0.75)'],
                         tension: 0.1,
                     },
                 ],
-            },
-            statisticChartOptions: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: false,
-                    }
-                },
-                scales: {
-                    y: {
-                        ticks: {
-                            callback: function (value, index, ticks) {
-                                return value + '°C';
-                            }
-                        }
-                    }
-                }
-            },
-
-            tempDate: [],
-
-            tempChartData: {
-                labels: ['10:01', '10:02', '10:03', '10:04', '10:05'],
-                datasets: [{
-                    label: 'Temperatur',
-                    data: [10, 53, 10, 83, 59],
-                    fill: false,
-                    tension: 0.1,
-                }],
-            },
-            tempChartOptions: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: false,
-                    }
-                },
-                scales: {
-                    y: {
-                        ticks: {
-                            callback: function (value, index, ticks) {
-                                return value + '°C';
-                            }
-                        }
-                    }
-                }
-            },
-        };
-    },
-
-    computed: {
-    //TODO: get sensors from api to the diagramm
-        getStatisticChart() {
-            let data = {};
-            
-            data['statistic'] = {}
-
-            data['statistic']['data'] = {
-                labels: (function() {
-                    if(this.sensors) {
-                        let labelSensors = [];
-                        this.sensors.forEach(sensor => {
-                            labelSensors.push('Sensor ' + sensor.SensorNr);
-                        });
-                        return labelSensors; 
-                    }
-                    return null;
-                }).call(data['statistic'], data['statistic']),
-                datasets: [{
-                        label: 'Maximal Temperatur',
-                        data: [10, 53, 10, 83, 59],
-                        fill: false,
-                        tension: 0.1,
-                    },
-                    {
-                        label: 'Durchschnitt Temperatur',
-                        data: [65, 59, 80, 81, 56],
-                        fill: false,
-                        tension: 0.1,
-                    },
-                ],
-            },
-
-            data['statistic']['options'] = {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    },
-                    title: {
-                        display: false,
-                    }
-                },
-                scales: {
-                    y: {
-                        ticks: {
-                            callback: function (value, index, ticks) {
-                                return value + '°C';
-                            }
-                        }
-                    }
-                }
             };
-            
-            return data;
+
+            return data['statistic']['data'];
         }
     },
 
@@ -204,24 +152,100 @@ export default {
             try {
                 const url = 'https://easy-temp-backend.vercel.app/data/sensor';
 
-                const {data} = await axios.get(url, {}, {
+                const {
+                    data
+                } = await axios.get(url, {}, {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded'
                     },
                 })
 
-                this.sensors = data;
+                return data;
 
             } catch (error) {
                 console.log(error);
             }
-        }
+        },
+
+        async getTemperatures() {
+            try {
+                const url = 'https://easy-temp-backend.vercel.app/data/temperature';
+
+                const {
+                    data
+                } = await axios.get(url, {}, {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                })
+
+                return data;
+
+            } catch (error) {
+                console.log(error);
+            }
+        },
+
+        async getSelectedTemperature() {
+            try {
+                const url = 'https://easy-temp-backend.vercel.app/data/temperature';
+                
+                this.loading = true;
+
+                const response = await axios.get(url, {
+                    params: {
+                        sensorNr: this.selectedSensor
+                    },
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+                this.loading = false;
+
+                var selectedTemperatures = response.data;
+
+            } catch (error) {
+                return console.log(error);
+            }
+
+            let data = {};
+
+            data['temperature'] = {}
+
+            data['temperature']['data'] = {
+                labels: (function () {
+                    if (selectedTemperatures) {
+                        let labels = [];
+                        selectedTemperatures.forEach(selectedTemperature => {
+                            labels.push(selectedTemperature.messzeitpunkt);
+                        });
+                        return labels;
+                    }
+                    return null;
+                }).call(data['temperature'], data['temperature']),
+                datasets: (function () {
+                    if (selectedTemperatures) {
+                        let data = [];
+                        selectedTemperatures.forEach(selectedTemperature => {
+                            data.push(selectedTemperature.temperatur);
+                        });
+                        return data;
+                    }
+                    return null;
+                }).call(data['temperature'], data['temperature']),
+            };
+
+            this.tempChartData = data['temperature']['data'];
+        },
     },
 
     async beforeMount() {
         this.loading = true;
 
-        await this.getSensors();
+        this.sensors = await this.getSensors();
+
+        this.temperatures = await this.getTemperatures();
 
         this.loading = false;
     }
@@ -232,6 +256,7 @@ export default {
 .container {
     margin-top: 2rem;
 }
+
 .loading-screen {
     position: fixed;
     top: 0;
@@ -241,7 +266,8 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Semi-transparent background */
     z-index: 9999;
 }
 </style>
