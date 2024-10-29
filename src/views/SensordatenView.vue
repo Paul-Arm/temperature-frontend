@@ -53,7 +53,9 @@ const columnDefs = ref([
 const defaultColDef = ref({
   resizable: true,
   sortable: true,
-  filter: true
+  filter: true,
+  flex: 1,
+  minWidth: 100,
 });
 
 // Fetch data when the component mounts

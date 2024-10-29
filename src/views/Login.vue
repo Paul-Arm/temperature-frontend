@@ -1,21 +1,21 @@
 <template>
-    <div class="container">
-<div class="login-container">
-    <h3 class="login-title">Login <br> EasyTemperature</h3>
-    <form @submit.prevent="login">
-        <div class="mb-3">
-            <label for="username" class="form-label">Benutzername</label>
-            <input type="username" class="form-control" id="username" v-model="username" required>
-        </div>
-        <div class="mb-3">
-            <label for="password" class="form-label">Passwort</label>
-            <input type="password" class="form-control" id="password" v-model="password" required>
-        </div>
-        <button type="submit" class="btn btn-custom">Login</button>
+<div class="container">
+    <div class="login-container">
+        <h3 class="login-title">Login <br> EasyTemperature</h3>
+        <form @submit.prevent="login">
+            <div class="mb-3">
+                <label for="username" class="form-label">Benutzername</label>
+                <input type="username" class="form-control" id="username" v-model="username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Passwort</label>
+                <input type="password" class="form-control" id="password" v-model="password" required>
+            </div>
+            <button type="submit" class="btn btn-custom">Login</button>
+        </form>
+        <button class="btn btn-link" @click="guestLogin()" style="color: blue; text-decoration: none;">als Gast anmelden</button>
         <div v-if="error" class="alert alert-danger" style="margin-top: 1rem;" role="alert">{{ error }}</div>
-    </form>
-    <button class="btn btn-link" @click="guestLogin()" style="color: blue; text-decoration: none;">als gast anmelden</button>
-</div>
+    </div>
 </div>
 </template>
 
@@ -68,9 +68,9 @@ export default {
 }
 
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .login-container {

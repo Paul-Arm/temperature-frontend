@@ -4,7 +4,7 @@
         <div>
             <Datepicker v-model="date" range />
             
-            <button @click="fetchLogs">Logs abfragen</button>
+            <button class="btn btn-primary m-2" @click="fetchLogs">Logs abfragen</button>
         </div>
         
         <ag-grid-vue class="ag-theme-alpine" :columnDefs="columnDefs" :rowData="rowData" :gridOptions="gridOptions"
